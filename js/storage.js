@@ -1,6 +1,7 @@
 const PENDING_KEY = "pendingJigData";
 const ACTIVE_KEY = "activeJigRecord";
 const THEME_KEY = "jigAppThemeCleanV1";
+const PIC_KEY = "jigSavedPic";
 
 function readJson(key, fallback) {
   try {
@@ -50,4 +51,12 @@ export function getSavedTheme() {
 
 export function saveTheme(theme) {
   localStorage.setItem(THEME_KEY, theme);
+}
+
+export function getSavedPic() {
+  return localStorage.getItem(PIC_KEY) || "";
+}
+
+export function savePic(pic) {
+  localStorage.setItem(PIC_KEY, pic);
 }

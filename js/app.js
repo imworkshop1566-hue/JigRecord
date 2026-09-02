@@ -6,9 +6,11 @@ import {
   clearActiveRecord,
   getActiveRecord,
   getPendingRecords,
+  getSavedPic,
   getSavedTheme,
   removePendingRecord,
   saveActiveRecord,
+  savePic,
   saveTheme,
 } from "./storage.js";
 import { formatDateParts, generateRecordId, showToast } from "./utils.js";
@@ -322,7 +324,7 @@ function resetForm({ confirmActive = false, preserveActive = false } = {}) {
     timer.reset();
     fields.id.value = generateRecordId();
     fields.duration.value = "00:00:00";
-    fields.pic.value = "";
+    fields.pic.value = getSavedPic();
     $("#validationSummary").hidden = true;
     selectedImages = [];
     syncImageField();
@@ -514,6 +516,7 @@ form.addEventListener("input", () => {
   $("#validationSummary").hidden = true;
 });
 fields.pic.addEventListener("input", () => {
+  savePic(fields.pic.value);
   scheduleDraftPersistence();
   $("#validationSummary").hidden = true;
 });
