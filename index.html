@@ -1,0 +1,232 @@
+<!doctype html>
+<html lang="th" data-theme="light">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="theme-color" content="#071018" />
+    <meta name="description" content="Jig Repair and Inspection record system" />
+    <title>Jig Repair / Inspection</title>
+    <link rel="stylesheet" href="css/style.css" />
+    <script src="https://unpkg.com/html5-qrcode@2.3.8/html5-qrcode.min.js" defer></script>
+    <script type="module" src="js/app.js"></script>
+  </head>
+  <body>
+    <header class="app-header">
+      <div class="brand">
+        <span class="brand-mark" aria-hidden="true">JR</span>
+        <div>
+          <p class="eyebrow">MAINTENANCE CONTROL</p>
+          <h1>Jig Repair <span>/ Inspection</span></h1>
+        </div>
+      </div>
+      <div class="header-status">
+        <label class="header-pic" for="pic">
+          <span>PIC / ผู้รับผิดชอบ</span>
+          <select id="pic" name="PIC" required>
+            <option value="" selected disabled>Select PIC</option>
+            <option value="Fam">Fam</option>
+            <option value="Poom">Poom</option>
+            <option value="Mate">Mate</option>
+            <option value="Chen">Chen</option>
+            <option value="Bos">Bos</option>
+            <option value="Ten">Ten</option>
+            <option value="Note">Note</option>
+            <option value="Tong">Tong</option>
+            <option value="Dump">Dump</option>
+          </select>
+        </label>
+        <button id="themeToggle" class="icon-button" type="button" aria-label="สลับโหมดสี" title="สลับโหมดสี">
+          <svg aria-hidden="true" viewBox="0 0 24 24"><path d="M12 3a9 9 0 1 0 9 9c0-.46-.04-.91-.1-1.35A7 7 0 0 1 13.35 3.1C12.91 3.04 12.46 3 12 3Z"/></svg>
+        </button>
+      </div>
+    </header>
+
+    <span id="networkStatus" class="network-status online" aria-label="Online" title="Online"><span class="status-dot"></span></span>
+
+    <div id="floatingTimer" class="floating-timer" aria-hidden="true">
+      <div class="floating-timer-status">
+        <span id="floatingTimerState" class="state-badge idle">IDLE</span>
+        <span id="floatingTimerDisplay" class="floating-timer-display" aria-live="polite">00:00:00</span>
+      </div>
+      <div class="floating-timer-actions">
+        <button id="floatingStartButton" class="button primary" type="button" tabindex="-1">
+          <svg aria-hidden="true" viewBox="0 0 24 24"><path d="m8 5 11 7-11 7V5Z"/></svg>
+          <span>START</span>
+        </button>
+        <button id="floatingStopButton" class="button danger" type="button" tabindex="-1" disabled>
+          <svg aria-hidden="true" viewBox="0 0 24 24"><path d="M6 6h12v12H6z"/></svg>
+          <span>STOP</span>
+        </button>
+        <button id="floatingResetButton" class="button timer-reset" type="button" tabindex="-1" aria-label="Reset timer" title="Reset timer">
+          <svg aria-hidden="true" viewBox="0 0 24 24"><path d="M20 7v5h-5M4 17v-5h5M6.1 9A7 7 0 0 1 18.2 7L20 9M4 15l1.8 2A7 7 0 0 0 17.9 15"/></svg>
+        </button>
+      </div>
+    </div>
+
+    <main class="app-shell">
+      <form id="recordForm" class="form-card" novalidate>
+        <div class="section-heading form-heading">
+          <p class="eyebrow">RECORD DETAILS <span class="heading-th">/ รายละเอียดการบันทึก</span></p>
+          <label class="record-id-inline" for="recordId">
+            <input id="recordId" name="ID" type="text" readonly aria-label="Record ID" />
+          </label>
+        </div>
+
+        <div id="validationSummary" class="validation-summary" role="alert" hidden></div>
+
+        <input id="startDay" name="Start day" type="hidden" />
+        <input id="startTime" name="Start time" type="hidden" />
+        <input id="finishDay" name="Finish day" type="hidden" />
+        <input id="finishTime" name="Finish time" type="hidden" />
+        <input id="duration" name="Duration" type="hidden" value="00:00:00" />
+
+        <div class="form-grid">
+          <label class="field span-2">
+            <span>Jig no. <small class="label-th">/ ชื่อจิ๊ก</small> <b>*</b></span>
+            <div class="input-action">
+              <input id="jigNo" name="Jig no." type="text" autocomplete="off" placeholder="XXX.XXXX-X.X-XXX.XXX-XX" required />
+              <button id="confirmJigButton" class="button confirm-jig" type="button">
+                <svg aria-hidden="true" viewBox="0 0 24 24"><path d="M5 12h12M13 8l4 4-4 4M19 5v14"/></svg>
+                ENTER
+              </button>
+              <button id="scanButton" class="button scan" type="button">
+                <svg aria-hidden="true" viewBox="0 0 24 24"><path d="M4 7V4h3M17 4h3v3M20 17v3h-3M7 20H4v-3M7 9h2v6H7zM11 9h2v6h-2zM15 9h2v6h-2z"/></svg>
+                SCAN
+              </button>
+            </div>
+            <small>Enter the Jig no. or scan to start the timer automatically.</small>
+          </label>
+
+          <label class="field span-2">
+            <span>Process <small class="label-th">/ กระบวนการ</small> <b>*</b></span>
+            <select id="jigType" name="Jig type" required>
+              <option value="" selected disabled>Select process</option>
+              <option value="PNL Pre-FCT">PNL Pre-FCT</option>
+              <option value="PNL FN-FCT">PNL FN-FCT</option>
+              <option value="PNL QA">PNL QA</option>
+              <option value="MDL 1st-FCT">MDL 1st-FCT</option>
+              <option value="MDL Assy">MDL Assy</option>
+              <option value="MDL Final-FCT1(Pro3)">MDL Final-FCT1(Pro3)</option>
+              <option value="MDL Final FCT2(pro2)">MDL Final FCT2(pro2)</option>
+              <option value="MDL QA">MDL QA</option>
+              <option value="Other">Other</option>
+            </select>
+          </label>
+
+          <label class="field span-2">
+            <span>Cause <small class="label-th">/ อุปกรณ์ที่เสีย</small> <b>*</b></span>
+            <select id="cause" name="Cause" required>
+              <option value="" selected disabled>Select cause</option>
+              <option value="Air cylinder">Air cylinder</option>
+              <option value="Air regulator">Air regulator</option>
+              <option value="Air Solenoid">Air Solenoid</option>
+              <option value="Airflow control valve">Airflow control valve</option>
+              <option value="Backlight circuit">Backlight circuit</option>
+              <option value="Backlight part">Backlight part</option>
+              <option value="Check20k">Check20k</option>
+              <option value="Clamp">Clamp</option>
+              <option value="Cover part jig">Cover part jig</option>
+              <option value="E-checker">E-checker</option>
+              <option value="Exchange board">Exchange board</option>
+              <option value="FPC">FPC</option>
+              <option value="Fuse">Fuse</option>
+              <option value="Glass Backlight">Glass Backlight</option>
+              <option value="Heater part">Heater part</option>
+              <option value="IDC connector">IDC connector</option>
+              <option value="Lens">Lens</option>
+              <option value="Linear guild">Linear guild</option>
+              <option value="LVDS board">LVDS board</option>
+              <option value="NTF">NTF</option>
+              <option value="Pair cable">Pair cable</option>
+              <option value="Panel Mix circuit">Panel Mix circuit</option>
+              <option value="PCB Connector board">PCB Connector board</option>
+              <option value="Pin connector">Pin connector</option>
+              <option value="Polarizer glass">Polarizer glass</option>
+              <option value="Reed switch sensor circuit">Reed switch sensor circuit</option>
+              <option value="Shield ITO part">Shield ITO part</option>
+              <option value="Small E-checker">Small E-checker</option>
+              <option value="Stoper urethane">Stoper urethane</option>
+              <option value="Switch">Switch</option>
+              <option value="Switching power supply">Switching power supply</option>
+              <option value="Take system Clamp">Take system Clamp</option>
+              <option value="Test points">Test points</option>
+              <option value="Thermocouple">Thermocouple</option>
+              <option value="TS-300">TS-300</option>
+              <option value="TS-5000">TS-5000</option>
+              <option value="USG">USG</option>
+              <option value="Wiring">Wiring</option>
+              <option value="YOKOWO Connector">YOKOWO Connector</option>
+              <option value="Other">Other</option>
+            </select>
+          </label>
+
+          <label class="field span-2">
+            <span>Detail <small class="label-th">/ อาการเสีย / สาเหตุ</small> <b>*</b></span>
+            <textarea id="detail" name="Detail" rows="4" placeholder="ระบุสาเหตุ เช่น สายไฟขาด บอร์ดเสีย" required></textarea>
+          </label>
+          <label class="field span-2">
+            <span>Action <small class="label-th">/ การแก้ไข</small> <b>*</b></span>
+            <textarea id="action" name="Action" rows="4" placeholder="ระบุการแก้ไข เช่น เปลี่ยนใหม่ ปรับค่าแสง" required></textarea>
+          </label>
+
+          <div class="field span-2">
+            <label for="imageFile">Images <small class="label-th">/ รูปภาพ</small> <span class="optional-label">Optional</span></label>
+            <input id="imageUrl" name="Image" type="hidden" />
+            <div class="file-row">
+              <label class="file-button" for="imageFile">
+                <svg aria-hidden="true" viewBox="0 0 24 24"><path d="M4 7h4l2-2h4l2 2h4v12H4V7Zm8 3a3 3 0 1 0 0 6 3 3 0 0 0 0-6Z"/></svg>
+                TAKE / ADD PHOTOS
+              </label>
+              <input id="imageFile" type="file" accept="image/*" capture="environment" multiple />
+              <span id="fileName">0 / 3 photos</span>
+            </div>
+            <small>Up to 3 photos. Images are compressed before sending to Power Automate.</small>
+            <div id="imagePreviewWrap" class="image-preview-grid" hidden></div>
+          </div>
+
+        </div>
+
+        <div class="send-bar">
+          <button id="sendButton" class="button send" type="submit">
+            <svg aria-hidden="true" viewBox="0 0 24 24"><path d="m21 3-7.5 18-4.2-7.8L2 9l19-6Zm-11.7 10.2L21 3"/></svg>
+            <span>SEND DATA</span>
+          </button>
+        </div>
+      </form>
+
+      <aside class="pending-card" aria-labelledby="pendingHeading">
+        <div class="section-heading">
+          <div>
+            <p class="eyebrow">LOCAL QUEUE</p>
+            <h2 id="pendingHeading">Pending data <small class="heading-th">/ ข้อมูลรอส่ง</small> <span id="pendingCount">(0)</span></h2>
+          </div>
+          <button id="retryAllButton" class="button ghost" type="button" hidden>RETRY ALL</button>
+        </div>
+        <div id="pendingList" class="pending-list">
+          <div class="empty-state">
+            <svg aria-hidden="true" viewBox="0 0 24 24"><path d="M20 7 10 17l-5-5"/></svg>
+            <p>No pending records</p>
+            <small>Failed submissions will be stored safely on this device.</small>
+          </div>
+        </div>
+      </aside>
+    </main>
+
+    <div id="scannerModal" class="modal" role="dialog" aria-modal="true" aria-labelledby="scannerTitle" hidden>
+      <div class="modal-panel scanner-panel">
+        <div class="modal-header">
+          <div>
+            <p class="eyebrow">CAMERA INPUT</p>
+            <h2 id="scannerTitle">Scan QR / Barcode</h2>
+          </div>
+          <button id="closeScannerButton" class="icon-button" type="button" aria-label="ปิด Scanner">×</button>
+        </div>
+        <div id="qrReader" class="qr-reader"></div>
+        <p id="scannerMessage" class="scanner-message">Point the camera at the code.</p>
+        <button id="cancelScannerButton" class="button secondary full" type="button">CANCEL</button>
+      </div>
+    </div>
+
+    <div id="toastRegion" class="toast-region" aria-live="polite" aria-atomic="true"></div>
+  </body>
+</html>
