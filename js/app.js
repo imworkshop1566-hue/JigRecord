@@ -330,6 +330,7 @@ function resetForm({ confirmActive = false, preserveActive = false } = {}) {
     timer.reset();
     fields.id.value = generateRecordId();
     fields.duration.value = "00:00:00";
+    fields.cause.value = "";
     fields.pic.value = getSavedPic();
     $("#validationSummary").hidden = true;
     selectedImages = [];
