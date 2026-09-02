@@ -1,16 +1,20 @@
 import { WorkTimer } from "./timer.js";
 import { ScannerController } from "./scanner.js";
-import { isApiConfigured, sendWithRetry } from "./api.js";
+import { fetchCauseOptions, fetchPicOptions, isApiConfigured, sendWithRetry } from "./api.js";
 import {
   addPendingRecord,
   clearActiveRecord,
+  getCachedCauseOptions,
+  getCachedPicOptions,
   getActiveRecord,
   getPendingRecords,
   getSavedPic,
   getSavedTheme,
   removePendingRecord,
   saveActiveRecord,
+  saveCauseOptions,
   savePic,
+  savePicOptions,
   saveTheme,
 } from "./storage.js";
 import { formatDateParts, generateRecordId, showToast } from "./utils.js";
@@ -28,6 +32,8 @@ let sending = false;
 let selectedImages = [];
 let suspendPersistence = false;
 let draftSaveTimeout = null;
+let picOptionsAvailable = false;
+let causeOptionsAvailable = false;
 const MAX_IMAGES = 3;
 const MAX_IMAGE_BYTES = 450 * 1024;
 
@@ -395,7 +401,8 @@ function setSendingState(active, label = "SEND DATA") {
   $("#floatingResetButton").disabled = active;
   if (!active) {
     form.querySelectorAll("input, textarea, select, button").forEach((element) => { element.disabled = false; });
-    fields.pic.disabled = false;
+    fields.cause.disabled = !causeOptionsAvailable;
+    fields.pic.disabled = !picOptionsAvailable;
     fields.id.readOnly = true;
     [fields.startDay, fields.startTime, fields.finishDay, fields.finishTime, fields.duration].forEach((element) => { element.readOnly = true; });
     $("#floatingResetButton").disabled = false;
@@ -489,6 +496,100 @@ function toggleTheme() {
   saveTheme(next);
 }
 
+function renderPicOptions(options, preferredPic = "") {
+  const placeholder = document.createElement("option");
+  placeholder.value = "";
+  placeholder.textContent = "Select PIC";
+  placeholder.disabled = true;
+  placeholder.selected = true;
+  const optionElements = options.map((name) => {
+    const option = document.createElement("option");
+    option.value = name;
+    option.textContent = name;
+    return option;
+  });
+  fields.pic.replaceChildren(placeholder, ...optionElements);
+  picOptionsAvailable = options.length > 0;
+  fields.pic.disabled = !picOptionsAvailable || sending;
+  if (options.includes(preferredPic)) fields.pic.value = preferredPic;
+}
+
+async function loadPicOptions(preferredPic = getSavedPic()) {
+  fields.pic.disabled = true;
+  fields.pic.replaceChildren(Object.assign(document.createElement("option"), {
+    value: "",
+    textContent: "Loading PIC…",
+  }));
+
+  const cachedOptions = getCachedPicOptions();
+  try {
+    const options = await fetchPicOptions();
+    savePicOptions(options);
+    renderPicOptions(options, preferredPic);
+  } catch (error) {
+    if (cachedOptions.length) {
+      renderPicOptions(cachedOptions, preferredPic);
+      showToast("Using cached PIC list", "warning");
+      return;
+    }
+    picOptionsAvailable = false;
+    fields.pic.replaceChildren(Object.assign(document.createElement("option"), {
+      value: "",
+      textContent: "PIC unavailable",
+    }));
+    fields.pic.disabled = true;
+    const message = error.message === "PIC_NOT_CONFIGURED" ? "PIC_LIST_URL is not configured" : "Unable to load PIC list";
+    showToast(message, "error");
+  }
+}
+
+function renderCauseOptions(options, preferredCause = "") {
+  const placeholder = document.createElement("option");
+  placeholder.value = "";
+  placeholder.textContent = "Select cause";
+  placeholder.disabled = true;
+  placeholder.selected = true;
+  const optionElements = options.map((name) => {
+    const option = document.createElement("option");
+    option.value = name;
+    option.textContent = name;
+    return option;
+  });
+  fields.cause.replaceChildren(placeholder, ...optionElements);
+  causeOptionsAvailable = options.length > 0;
+  fields.cause.disabled = !causeOptionsAvailable || sending;
+  if (options.includes(preferredCause)) fields.cause.value = preferredCause;
+}
+
+async function loadCauseOptions(preferredCause = "") {
+  fields.cause.disabled = true;
+  fields.cause.replaceChildren(Object.assign(document.createElement("option"), {
+    value: "",
+    textContent: "Loading Cause…",
+  }));
+
+  const cachedOptions = getCachedCauseOptions();
+  try {
+    const options = await fetchCauseOptions();
+    saveCauseOptions(options);
+    renderCauseOptions(options, preferredCause);
+  } catch (error) {
+    if (cachedOptions.length) {
+      renderCauseOptions(cachedOptions, preferredCause);
+      showToast("Using cached Cause list", "warning");
+      return;
+    }
+    causeOptionsAvailable = false;
+    fields.cause.replaceChildren(Object.assign(document.createElement("option"), {
+      value: "",
+      textContent: "Cause unavailable",
+    }));
+    fields.cause.disabled = true;
+    const message = error.message === "CAUSE_NOT_CONFIGURED" ? "CAUSE_LIST_URL is not configured" : "Unable to load Cause list";
+    showToast(message, "error");
+  }
+}
+
 $("#floatingStartButton").addEventListener("click", startWorkTimer);
 $("#floatingStopButton").addEventListener("click", stopWorkTimer);
 $("#floatingResetButton").addEventListener("click", () => {
@@ -543,6 +644,8 @@ $("#imageFile").addEventListener("change", async (event) => {
   }
 });
 window.addEventListener("online", updateNetworkStatus);
+window.addEventListener("online", () => loadPicOptions(fields.pic.value || getSavedPic()));
+window.addEventListener("online", () => loadCauseOptions(fields.cause.value));
 window.addEventListener("offline", updateNetworkStatus);
 window.addEventListener("pagehide", persistActiveRecord);
 
@@ -557,3 +660,5 @@ renderPending();
 updateNetworkStatus();
 if (storedActiveRecord) restoreRecord(storedActiveRecord);
 updateSendAvailability();
+loadPicOptions(storedActiveRecord?.form?.PIC || getSavedPic());
+loadCauseOptions(storedActiveRecord?.form?.Cause || "");

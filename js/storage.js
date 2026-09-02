@@ -2,6 +2,8 @@ const PENDING_KEY = "pendingJigData";
 const ACTIVE_KEY = "activeJigRecord";
 const THEME_KEY = "jigAppThemeCleanV1";
 const PIC_KEY = "jigSavedPic";
+const PIC_OPTIONS_KEY = "jigPicOptions";
+const CAUSE_OPTIONS_KEY = "jigCauseOptions";
 
 function readJson(key, fallback) {
   try {
@@ -59,4 +61,22 @@ export function getSavedPic() {
 
 export function savePic(pic) {
   localStorage.setItem(PIC_KEY, pic);
+}
+
+export function getCachedPicOptions() {
+  const options = readJson(PIC_OPTIONS_KEY, []);
+  return Array.isArray(options) ? options : [];
+}
+
+export function savePicOptions(options) {
+  localStorage.setItem(PIC_OPTIONS_KEY, JSON.stringify(options));
+}
+
+export function getCachedCauseOptions() {
+  const options = readJson(CAUSE_OPTIONS_KEY, []);
+  return Array.isArray(options) ? options : [];
+}
+
+export function saveCauseOptions(options) {
+  localStorage.setItem(CAUSE_OPTIONS_KEY, JSON.stringify(options));
 }

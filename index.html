@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta name="theme-color" content="#071018" />
     <meta name="description" content="Jig Repair and Inspection record system" />
-    <title>Jig Repair / Inspection</title>
+    <title>Jig Repaing record</title>
     <link rel="stylesheet" href="css/style.css" />
     <script src="https://unpkg.com/html5-qrcode@2.3.8/html5-qrcode.min.js" defer></script>
     <script type="module" src="js/app.js"></script>
@@ -13,26 +13,13 @@
   <body>
     <header class="app-header">
       <div class="brand">
-        <span class="brand-mark" aria-hidden="true">JR</span>
-        <div>
-          <p class="eyebrow">MAINTENANCE CONTROL</p>
-          <h1>Jig Repair <span>/ Inspection</span></h1>
-        </div>
+        <h1>Jig Repaing record</h1>
       </div>
       <div class="header-status">
         <label class="header-pic" for="pic">
           <span>PIC / ผู้รับผิดชอบ</span>
-          <select id="pic" name="PIC" required>
-            <option value="" selected disabled>Select PIC</option>
-            <option value="Fam">Fam</option>
-            <option value="Poom">Poom</option>
-            <option value="Mate">Mate</option>
-            <option value="Chen">Chen</option>
-            <option value="Bos">Bos</option>
-            <option value="Ten">Ten</option>
-            <option value="Note">Note</option>
-            <option value="Tong">Tong</option>
-            <option value="Dump">Dump</option>
+          <select id="pic" name="PIC" required disabled>
+            <option value="" selected>Loading PIC…</option>
           </select>
         </label>
         <button id="themeToggle" class="icon-button" type="button" aria-label="สลับโหมดสี" title="สลับโหมดสี">
@@ -115,48 +102,8 @@
 
           <label class="field span-2">
             <span>Cause <small class="label-th">/ อุปกรณ์ที่เสีย</small> <b>*</b></span>
-            <select id="cause" name="Cause" required>
-              <option value="" selected disabled>Select cause</option>
-              <option value="Air cylinder">Air cylinder</option>
-              <option value="Air regulator">Air regulator</option>
-              <option value="Air Solenoid">Air Solenoid</option>
-              <option value="Airflow control valve">Airflow control valve</option>
-              <option value="Backlight circuit">Backlight circuit</option>
-              <option value="Backlight part">Backlight part</option>
-              <option value="Check20k">Check20k</option>
-              <option value="Clamp">Clamp</option>
-              <option value="Cover part jig">Cover part jig</option>
-              <option value="E-checker">E-checker</option>
-              <option value="Exchange board">Exchange board</option>
-              <option value="FPC">FPC</option>
-              <option value="Fuse">Fuse</option>
-              <option value="Glass Backlight">Glass Backlight</option>
-              <option value="Heater part">Heater part</option>
-              <option value="IDC connector">IDC connector</option>
-              <option value="Lens">Lens</option>
-              <option value="Linear guild">Linear guild</option>
-              <option value="LVDS board">LVDS board</option>
-              <option value="NTF">NTF</option>
-              <option value="Pair cable">Pair cable</option>
-              <option value="Panel Mix circuit">Panel Mix circuit</option>
-              <option value="PCB Connector board">PCB Connector board</option>
-              <option value="Pin connector">Pin connector</option>
-              <option value="Polarizer glass">Polarizer glass</option>
-              <option value="Reed switch sensor circuit">Reed switch sensor circuit</option>
-              <option value="Shield ITO part">Shield ITO part</option>
-              <option value="Small E-checker">Small E-checker</option>
-              <option value="Stoper urethane">Stoper urethane</option>
-              <option value="Switch">Switch</option>
-              <option value="Switching power supply">Switching power supply</option>
-              <option value="Take system Clamp">Take system Clamp</option>
-              <option value="Test points">Test points</option>
-              <option value="Thermocouple">Thermocouple</option>
-              <option value="TS-300">TS-300</option>
-              <option value="TS-5000">TS-5000</option>
-              <option value="USG">USG</option>
-              <option value="Wiring">Wiring</option>
-              <option value="YOKOWO Connector">YOKOWO Connector</option>
-              <option value="Other">Other</option>
+            <select id="cause" name="Cause" required disabled>
+              <option value="" selected>Loading Cause…</option>
             </select>
           </label>
 

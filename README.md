@@ -44,10 +44,38 @@ RID ใช้รูปแบบ `RID-XX123456789012345` โดยตัวอั
 เปิด `js/config.js` แล้วแทนค่า Placeholder ด้วย HTTPS POST URL จาก Power Automate:
 
 ```javascript
-export const POWER_AUTOMATE_URL = "YOUR_POWER_AUTOMATE_URL";
+export const POWER_AUTOMATE_URL = "YOUR_SEND_DATA_URL";
+export const PIC_LIST_URL = "YOUR_PIC_LIST_URL";
+export const CAUSE_LIST_URL = "YOUR_CAUSE_LIST_URL";
 ```
 
 เมื่อใส่ URL และ Deploy แล้ว ผู้ใช้เปิดเว็บและใช้งานได้ทันทีโดยไม่ต้องตั้งค่าบนอุปกรณ์
+
+- `POWER_AUTOMATE_URL` ใช้ส่ง Jig Record
+- `PIC_LIST_URL` ใช้ HTTP POST เพื่อโหลดรายการ PIC ตอนเปิดเว็บ
+- `CAUSE_LIST_URL` ใช้ HTTP POST เพื่อโหลดรายการ Cause ตอนเปิดเว็บ
+
+PIC Flow ต้อง Response เป็น JSON array ตัวอย่าง:
+
+```json
+[
+  { "ItemInternalId": "...", "PIC": "Fam" },
+  { "ItemInternalId": "...", "PIC": " Poom " }
+]
+```
+
+เว็บจะใช้เฉพาะค่า `PIC`, ตัดช่องว่างหน้า/หลัง, ลบชื่อซ้ำ และ Cache รายการล่าสุดใน `localStorage` เพื่อใช้งานขณะ Offline
+
+Cause Flow ใช้รูปแบบเดียวกัน โดย Response เป็น JSON array ที่มี field `Cause`:
+
+```json
+[
+  { "ItemInternalId": "...", "Cause": "Air cylinder" },
+  { "ItemInternalId": "...", "Cause": " Wiring " }
+]
+```
+
+เว็บจะใช้เฉพาะค่า `Cause`, ตัดช่องว่าง, ลบค่าซ้ำ และ Cache รายการล่าสุดสำหรับ Offline เช่นเดียวกับ PIC
 
 ### สร้าง Power Automate HTTP Trigger
 
