@@ -622,7 +622,7 @@ fields.pic.addEventListener("input", () => {
   scheduleDraftPersistence();
   $("#validationSummary").hidden = true;
 });
-$("#imageFile").addEventListener("change", async (event) => {
+async function handleImageSelection(event) {
   const availableSlots = MAX_IMAGES - selectedImages.length;
   const files = Array.from(event.target.files || []).slice(0, availableSlots);
   event.target.value = "";
@@ -643,7 +643,10 @@ $("#imageFile").addEventListener("change", async (event) => {
     renderImagePreviews();
     showToast(error.message || "Unable to process image", "error");
   }
-});
+}
+
+$("#cameraFile").addEventListener("change", handleImageSelection);
+$("#imageFile").addEventListener("change", handleImageSelection);
 window.addEventListener("online", updateNetworkStatus);
 window.addEventListener("online", () => loadPicOptions(fields.pic.value || getSavedPic()));
 window.addEventListener("online", () => loadCauseOptions(fields.cause.value));

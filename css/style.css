@@ -168,10 +168,12 @@ input[readonly] { color: color-mix(in srgb, var(--text) 80%, var(--muted)); }
 .input-action input { min-width: 0; }
 .button.confirm-jig { min-width: 94px; color: var(--text); background: var(--surface-3); border-color: var(--border); }
 .button.scan { min-width: 104px; color: #fff; background: var(--accent); border-color: var(--accent); box-shadow: 0 7px 18px rgba(54,92,255,.18); }
-.file-row { display: flex; align-items: center; gap: 10px; min-height: 36px; }
-#imageFile { position: absolute; width: 1px; height: 1px; overflow: hidden; opacity: 0; }
-.file-button { min-height: 50px; padding: 8px 14px; display: inline-flex; align-items: center; gap: 8px; border: 1px solid var(--border); border-radius: 10px; background: var(--surface-3); color: var(--text); cursor: pointer; font-size: 13px; font-weight: 800; }
-.file-button svg { width: 17px; height: 17px; fill: none; stroke: currentColor; stroke-width: 1.8; }
+.field-label { color: var(--text); font-size: 14px; font-weight: 750; }
+.file-row { display: flex; align-items: center; flex-wrap: wrap; gap: 10px; min-height: 36px; }
+.image-file-input { position: absolute; width: 1px; height: 1px; overflow: hidden; opacity: 0; }
+.file-button { min-height: 40px; padding: 6px 10px; display: inline-flex; align-items: center; gap: 6px; border: 1px solid var(--border); border-radius: 8px; background: var(--surface-3); color: var(--text); cursor: pointer; font-size: 11px; font-weight: 800; }
+.file-button-camera { color: #fff; border-color: var(--accent); background: var(--accent); }
+.file-button svg { width: 15px; height: 15px; fill: none; stroke: currentColor; stroke-width: 1.8; }
 #fileName { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; font-weight: 500; }
 .image-preview-grid { margin-top: 4px; display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 8px; }
 .image-preview-item { position: relative; aspect-ratio: 4 / 3; overflow: hidden; border: 1px solid var(--border); border-radius: 10px; background: var(--surface-3); }

@@ -117,14 +117,19 @@
           </label>
 
           <div class="field span-2">
-            <label for="imageFile">Images <small class="label-th">/ รูปภาพ</small> <span class="optional-label">Optional</span></label>
+            <div class="field-label">Images <small class="label-th">/ รูปภาพ</small> <span class="optional-label">Optional</span></div>
             <input id="imageUrl" name="Image" type="hidden" />
             <div class="file-row">
-              <label class="file-button" for="imageFile">
+              <label class="file-button file-button-camera" for="cameraFile">
                 <svg aria-hidden="true" viewBox="0 0 24 24"><path d="M4 7h4l2-2h4l2 2h4v12H4V7Zm8 3a3 3 0 1 0 0 6 3 3 0 0 0 0-6Z"/></svg>
-                TAKE / ADD PHOTOS
+                TAKE PHOTO
               </label>
-              <input id="imageFile" type="file" accept="image/*" capture="environment" multiple />
+              <input id="cameraFile" class="image-file-input" type="file" accept="image/*" capture="environment" />
+              <label class="file-button" for="imageFile">
+                <svg aria-hidden="true" viewBox="0 0 24 24"><path d="M12 3v12m-4-4 4 4 4-4M4 17v3h16v-3"/></svg>
+                ATTACH PHOTO
+              </label>
+              <input id="imageFile" class="image-file-input" type="file" accept="image/*" multiple />
               <span id="fileName">0 / 3 photos</span>
             </div>
             <small>Max 3 photos</small>
