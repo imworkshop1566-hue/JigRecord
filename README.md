@@ -117,7 +117,7 @@ Cause Flow ใช้รูปแบบเดียวกัน โดย Respons
       "Detail": { "type": "string" },
       "Action": { "type": "string" },
       "Image": { "type": "string" },
-      "Duration": { "type": "string" },
+      "Duration": { "type": "integer" },
       "PIC": { "type": "string" }
     },
     "required": [
@@ -145,7 +145,7 @@ Payload ที่เว็บส่งเป็น Array และใช้ช�
     "Detail": "Pin damaged",
     "Action": "Replace connector",
     "Image": "[{\"name\":\"RID-VS631780990814276-01.jpg\",\"type\":\"image/jpeg\",\"content\":\"/9j/4AAQ...\"}]",
-    "Duration": "00:12:00",
+    "Duration": 720,
     "PIC": "Atibass"
   }
 ]

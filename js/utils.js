@@ -51,6 +51,11 @@ export function formatDuration(milliseconds) {
   return [hours, minutes, seconds].map((value) => String(value).padStart(2, "0")).join(":");
 }
 
+export function durationToSeconds(duration) {
+  const [hours = 0, minutes = 0, seconds = 0] = String(duration).split(":").map(Number);
+  return Math.max(0, (hours * 3600) + (minutes * 60) + seconds);
+}
+
 export function delay(milliseconds) {
   return new Promise((resolve) => window.setTimeout(resolve, milliseconds));
 }

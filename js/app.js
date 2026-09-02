@@ -17,7 +17,7 @@ import {
   savePicOptions,
   saveTheme,
 } from "./storage.js";
-import { formatDateParts, generateRecordId, showToast } from "./utils.js";
+import { durationToSeconds, formatDateParts, generateRecordId, showToast } from "./utils.js";
 
 const $ = (selector) => document.querySelector(selector);
 const form = $("#recordForm");
@@ -140,6 +140,15 @@ function readRecord() {
     "Image": fields.image.value.trim(),
     "Duration": fields.duration.value,
     "PIC": fields.pic.value.trim(),
+  };
+}
+
+function prepareRecordForSend(record) {
+  return {
+    ...record,
+    "Duration": typeof record.Duration === "number"
+      ? record.Duration
+      : durationToSeconds(record.Duration),
   };
 }
 
@@ -359,7 +368,7 @@ async function submitRecord(event) {
   fields.finishDay.value = sendDateTime.day;
   fields.finishTime.value = sendDateTime.time;
   persistActiveRecord();
-  const record = readRecord();
+  const record = prepareRecordForSend(readRecord());
 
   if (!navigator.onLine) {
     addPendingRecord(record);
@@ -422,7 +431,7 @@ async function retryPending(id) {
   const button = document.querySelector(`[data-retry-id="${CSS.escape(id)}"]`);
   if (button) { button.disabled = true; button.textContent = "SENDING…"; }
   try {
-    await sendWithRetry(record, (attempt, max) => { if (button) button.textContent = `${attempt}/${max}`; });
+    await sendWithRetry(prepareRecordForSend(record), (attempt, max) => { if (button) button.textContent = `${attempt}/${max}`; });
     removePendingRecord(id);
     renderPending();
     showToast(`Sent ${id}`);
