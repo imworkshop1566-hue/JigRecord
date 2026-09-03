@@ -160,7 +160,7 @@ h2 { margin-bottom: 0; font-size: 20px; letter-spacing: -.015em; }
 input, textarea, select { width: 100%; border: 1px solid var(--border); border-radius: 10px; outline: 0; color: var(--text); background: var(--surface-2); transition: border .12s, box-shadow .12s, background .12s; }
 input, select { height: 54px; padding: 0 14px; }
 select { padding-right: 38px; cursor: pointer; }
-textarea { padding: 14px; resize: vertical; min-height: 112px; }
+textarea { padding: 11px 14px; resize: vertical; min-height: 82px; }
 input:focus, textarea:focus, select:focus { border-color: var(--accent); background: var(--surface); box-shadow: 0 0 0 3px var(--accent-soft); }
 input[readonly] { color: color-mix(in srgb, var(--text) 80%, var(--muted)); }
 .input-action { display: flex; position: relative; }
